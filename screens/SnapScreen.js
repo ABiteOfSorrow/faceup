@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Camera } from "expo-camera";
 
-export default function App() {
+function SnapScreen(props) {
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [isFlash, setIsFlash] = useState(Camera.Constants.FlashMode.off);
@@ -26,6 +26,39 @@ export default function App() {
       setHasPermission(status === "granted");
     })();
   }, []);
+
+  const cloudinaryUpload = async () => {
+    setVisible(true);
+    if (cameraRef) {
+      let photo = await cameraRef.takePictureAsync({
+        quality: 0.7,
+        base64: true,
+        exif: true,
+      });
+      console.log(photo.uri); // chemin physique vers la photo
+      console.log(photo.width); // largeur
+      console.log(photo.height); // hauteur
+      console.log(photo.exif); // données exif
+      console.log(photo.base64); // photo encodée en base64
+
+      var data = new FormData(photo);
+      data.append("avatar", {
+        uri: photo.uri,
+        type: "image/jpeg",
+        name: "image.jpg",
+      });
+
+      const rawResponse = await fetch("http://192.168.10.117:3000/upload", {
+        method: "post",
+        body: data,
+      });
+
+      const response = await rawResponse.json();
+      console.log(response);
+      props.onSubmitPhotoList(response.photo.url);
+      setVisible(false);
+    }
+  };
 
   // Focusing for maintain camera when go to other page
   const isFocused = useIsFocused();
@@ -81,22 +114,7 @@ export default function App() {
           buttonStyle={{ backgroundColor: "#009788" }}
           icon={<Ionicons name="save-outline" size={24} color="white" />}
           title=" snap"
-          onPress={async () => {
-            setVisible(true);
-            if (cameraRef) {
-              let photo = await cameraRef.takePictureAsync({
-                quality: 0.7,
-                base64: true,
-                exif: true,
-              });
-              console.log(photo.uri); // chemin physique vers la photo
-              console.log(photo.width); // largeur
-              console.log(photo.height); // hauteur
-              console.log(photo.exif); // données exif
-              console.log(photo.base64); // photo encodée en base64
-              setVisible(false);
-            }
-          }}
+          onPress={cloudinaryUpload}
         />
       </View>
     );
@@ -104,3 +122,13 @@ export default function App() {
     return <View style={{ flex: 1 }} />;
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onSubmitPhotoList: function (result) {
+      dispatch({ type: "savePhoto", photo: result });
+    },
+  };
+}
+
+export default connect(null, mapDispatchToProps)(SnapScreen);

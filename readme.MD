@@ -21,3 +21,9 @@ npm install --save redux react-redux
 npm install @react-native-async-storage/async-storage --save (local storage)
 
 expo install expo-camera
+
+npm install --save express-fileupload
+
+npm install --save uniqid
+
+npm install --save cloudinary
