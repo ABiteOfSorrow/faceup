@@ -1,8 +1,13 @@
-### reactStack
+### What is this?
 
-first try for react-native
+This application determines the user's gender and age from the photos taken.
 
-### Used NPM MODULE
+### How to use?
+
+Its simple, just change url in screens/SnapScreen with yours
+ex) const rawResponse = await fetch("http://192.168.10.142:3000/upload"
+
+### Used NPM MODULE with install code
 
 npm install -g expo-cli
 
@@ -27,3 +32,5 @@ npm install --save express-fileupload
 npm install --save uniqid
 
 npm install --save cloudinary
+
+npm install --save sync-request

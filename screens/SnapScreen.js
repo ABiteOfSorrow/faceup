@@ -5,7 +5,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 
 import { connect } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Camera } from "expo-camera";
 
 function SnapScreen(props) {
@@ -35,11 +34,12 @@ function SnapScreen(props) {
         base64: true,
         exif: true,
       });
-      console.log(photo.uri); // chemin physique vers la photo
-      console.log(photo.width); // largeur
-      console.log(photo.height); // hauteur
-      console.log(photo.exif); // données exif
-      console.log(photo.base64); // photo encodée en base64
+
+      // console.log(photo.uri); // chemin physique vers la photo
+      // console.log(photo.width); // largeur
+      // console.log(photo.height); // hauteur
+      // console.log(photo.exif); // données exif
+      // console.log(photo.base64); // photo encodée en base64
 
       var data = new FormData(photo);
       data.append("avatar", {
@@ -47,15 +47,15 @@ function SnapScreen(props) {
         type: "image/jpeg",
         name: "image.jpg",
       });
-
-      const rawResponse = await fetch("http://192.168.10.117:3000/upload", {
+      //Need to change IP when you start your APP (ipconfig)
+      const rawResponse = await fetch("http://192.168.10.142:3000/upload", {
         method: "post",
         body: data,
       });
 
       const response = await rawResponse.json();
-      console.log(response);
-      props.onSubmitPhotoList(response.photo.url);
+      // console.log(response);
+      props.onSubmitPhotoList(response);
       setVisible(false);
     }
   };
@@ -126,7 +126,12 @@ function SnapScreen(props) {
 function mapDispatchToProps(dispatch) {
   return {
     onSubmitPhotoList: function (result) {
-      dispatch({ type: "savePhoto", photo: result });
+      console.log(result);
+
+      dispatch({
+        type: "savePhoto",
+        photo: result,
+      });
     },
   };
 }

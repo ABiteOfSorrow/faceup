@@ -5,7 +5,6 @@ import { Button, Input, Card, Badge, withBadge, Text } from "react-native-elemen
 import { Ionicons } from "@expo/vector-icons";
 
 import { connect } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function GalleryScreen(props) {
   var photos = props.photo.map((photo, i) => {
@@ -14,13 +13,10 @@ function GalleryScreen(props) {
         <Card key={i}>
           <Card.Image
             style={{ width: "100%", height: 170, marginBottom: 10 }}
-            source={{ uri: photo }}
+            source={{ uri: photo.uri }}
           />
-          <Badge value="Homme" status="success" />
-          <Badge value="70ans" status="success" />
-          <Badge value="barbe" status="success" />
-          <Badge value="joyeux!" status="success" />
-          <Badge value="cheveux gris" status="success" />
+          <Badge value={photo.gender} status="success" />
+          <Badge value={photo.age} status="success" />
         </Card>
       );
     }
